@@ -237,7 +237,7 @@ class MoceanAPI_Admin{
 			}
 			$message = '<div class="updated below-h2" id="message"><p>' . sprintf(
 				/* translators: %d - Item count */
-				__('Selected for send email: %d <br> Email sent: %d', MOCEANAPI_ABANDONED_CARTS_TEXT_DOMAIN ), esc_html($email_sent_row_count), $_SESSION["count_sent_email"]
+				__('Selected for send email: %d <br> Email sent: %d', MOCEANAPI_ABANDONED_CARTS_TEXT_DOMAIN ), esc_html($email_sent_row_count), esc_html($_SESSION["count_sent_email"])
 			) . '</p></div>';
 		}elseif('send_sms' === $table->current_action()){
 			if(is_array($_REQUEST['id'])){ //If deleting multiple lines from table
@@ -248,7 +248,7 @@ class MoceanAPI_Admin{
 			}
 			$message = '<div class="updated below-h2" id="message"><p>' . sprintf(
 				/* translators: %d - Item count */
-				__('Selected for send sms: %d <br> SMS sent: %d', MOCEANAPI_ABANDONED_CARTS_TEXT_DOMAIN ), esc_html($sms_sent_row_count), $_SESSION["count_sent_sms"]
+				__('Selected for send sms: %d <br> SMS sent: %d', MOCEANAPI_ABANDONED_CARTS_TEXT_DOMAIN ), esc_html($sms_sent_row_count), esc_html($_SESSION["count_sent_sms"])
 			) . '</p></div>';
 			// if(!isset($_SESSION["count_sent_sms"])){
 			// 	echo "no session";
@@ -263,7 +263,7 @@ class MoceanAPI_Admin{
 
 		$cart_status = 'all';
         if (isset($_GET['cart-status'])){
-            $cart_status = $_GET['cart-status'];
+            $cart_status = sanitize_text_field($_GET['cart-status']);
         }?>
 
 		<div id="moceanapi-abandoned-carts-page-wrapper" class="wrap<?php if(get_option('moceanapi_abandoned_carts_hide_images')) {echo " moceanapi-abandoned-carts-without-thumbnails";}?>">
@@ -277,7 +277,7 @@ class MoceanAPI_Admin{
 
 			if ( $pagenow == 'admin.php' && $_GET['page'] == MOCEANAPI_ABANDONED_CARTS ){
 				if (isset($_GET['tab'])){
-					$tab = $_GET['tab'];
+					$tab = sanitize_text_field($_GET['tab']);
 				}else{
 					$tab = 'carts';
 				}
@@ -664,7 +664,7 @@ class MoceanAPI_Admin{
 						</p>
 					<?php else: ?>
 						<form id="moceanapi-abandoned-carts-table" method="GET">
-							<?php $this->display_cart_statuses( $cart_status, $tab);?>
+							<?php $this->display_cart_statuses($cart_status, $tab);?>
 							<input type="hidden" name="page" value="<?php echo esc_html($_REQUEST['page']) ?>"/>
 							<?php $table->display(); ?>
 						</form>
@@ -1174,7 +1174,7 @@ class MoceanAPI_Admin{
         global $wpdb;
         $cart_table = $wpdb->prefix . MOCEANAPI_ABANDONED_CARTS_TABLE_NAME;
         $total_items = 0;
-        $where_sentence = $this->get_where_sentence($cart_status);
+        $where_sentence = $this->get_where_sentence(esc_html($cart_status));
 
         $total_items = $wpdb->get_var("
             SELECT COUNT(id)
@@ -1217,7 +1217,7 @@ class MoceanAPI_Admin{
     		if($counter == $total_items){
     			$divider = '';
     		}
-    		$class = ( $key == $cart_status ) ? 'current' : '';
+    		$class = ( $key == esc_html($cart_status) ) ? 'current' : '';
     		$count = $this->get_cart_count($key);
     		if (!($key == 'ghost' && $exclude)){ //If we are not processing Ghost carts and they have not been excluded
 	    		echo "<li><a href='?page=". MOCEANAPI_ABANDONED_CARTS ."&tab=$tab&cart-status=$key' title='$type' class='$class'>$type <span class='count'>($count)</span></a></li>$divider";

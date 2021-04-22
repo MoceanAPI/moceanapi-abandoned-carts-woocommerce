@@ -367,18 +367,18 @@ class MoceanAPI_Table extends WP_List_Table{
         if ('delete' === $this->current_action()) {
 
             $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
-
-            if (!empty($ids)){
-                if(!is_array($ids)){ //Bulk abandoned cart deletion
-                    $ids[] = $ids;
+            $selected_id = array_map( 'sanitize_text_field', $ids );
+            
+            if (!empty($selected_id)){
+                if(!is_array($selected_id)){ //Bulk abandoned cart deletion
+                    $selected_id[] = $selected_id;
                 }
-                foreach ($ids as $key => $id){
-                    $selected_id = sanitize_text_field($id); 
+                foreach ($selected_id as $key => $id){
                     $wpdb->query(
                         $wpdb->prepare(
                             "DELETE FROM $cart_table
                             WHERE id = %d",
-                            esc_html(intval($selected_id))
+                            intval($id)
                         )
                     );
                 }
@@ -386,31 +386,32 @@ class MoceanAPI_Table extends WP_List_Table{
         }
         elseif('send_sms' === $this->current_action()) {
             $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
-
-            if (!empty($ids)){ //If any selection
-                if(!is_array($ids)){ //Bulk abandoned cart send sms
-                    $ids[] = $ids;
+            $selected_id = array_map( 'sanitize_text_field', $ids );
+            
+            if (!empty($selected_id)){ //If any selection
+                if(!is_array($selected_id)){ //Bulk abandoned cart send sms
+                    $selected_id[] = $selected_id;
                 }
-                foreach ($ids as $key => $id){
-                    $selected_id = sanitize_text_field($id);
-                    $sent_bulk_sms_successful = $this->send_bulk_sms($selected_id);
+                foreach ($selected_id as $key => $id){
+                    $sent_bulk_sms_successful = $this->send_bulk_sms($id);
                     if($sent_bulk_sms_successful){
-                        $_SESSION["count_sent_sms"] = $_SESSION["count_sent_sms"] + 1;
+                        $_SESSION["count_sent_sms"] = sanitize_text_field($_SESSION["count_sent_sms"]) + 1;
                     }
                 }
             }
         }
         elseif('send_email' === $this->current_action()) {
             $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
-            if (!empty($ids)){ //If any selection
-                if(!is_array($ids)){ //Bulk abandoned cart send email
-                    $ids[] = $ids; 
+            $selected_id = array_map( 'sanitize_text_field', $ids );
+
+            if (!empty($selected_id)){ //If any selection
+                if(!is_array($selected_id)){ //Bulk abandoned cart send email
+                    $selected_id[] = $selected_id; 
                 }
-                foreach ($ids as $key => $id){
-                    $selected_id = sanitize_text_field($id);
-                    $sent_bulk_email_successfult = $this->send_bulk_email($selected_id);
-                    if($sent_bulk_email_successfult){
-                        $_SESSION["count_sent_email"] = $_SESSION["count_sent_email"] + 1;
+                foreach ($selected_id as $key => $id){
+                    $sent_bulk_email_successfull = $this->send_bulk_email($id);
+                    if($sent_bulk_email_successfull){
+                        $_SESSION["count_sent_email"] = sanitize_text_field($_SESSION["count_sent_email"]) + 1;
                     }
                 }
             }

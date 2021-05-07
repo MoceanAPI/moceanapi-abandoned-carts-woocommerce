@@ -264,13 +264,14 @@ class MoceanAPI_Admin{
 		$cart_status = 'all';
         if (isset($_GET['cart-status'])){
             $cart_status = sanitize_text_field($_GET['cart-status']);
-        }?>
+        }
+		?>
 
 		<div id="moceanapi-abandoned-carts-page-wrapper" class="wrap<?php if(get_option('moceanapi_abandoned_carts_hide_images')) {echo " moceanapi-abandoned-carts-without-thumbnails";}?>">
 			<h1><?php echo MOCEANAPI_ABANDONED_CARTS_ABREVIATION; ?></h1>
 
 			<?php if ( isset ( $_GET['tab'] ) ){
-				$this->create_admin_tabs($_GET['tab']);
+				$this->create_admin_tabs(sanitize_text_field($_GET['tab']));
 			}else{
 				$this->create_admin_tabs('carts');
 			}
@@ -427,6 +428,11 @@ class MoceanAPI_Admin{
 					}
 					$current_user_id = get_current_user_id();
 					$phone = get_user_meta($current_user_id,'billing_phone',true);
+					$default_phone = get_option('moceanapi_abandoned_carts_notification_sms');
+					if(empty($default_phone)){
+						$default_phone = $phone;
+					}
+					$this->smsAbandonedCartSendMessage();
 					?>
 
 					<table id="moceanapi-abandoned-carts-smssettings-table" class="form-table">
@@ -470,7 +476,7 @@ class MoceanAPI_Admin{
 									<label for="moceanapi_abandoned_carts_notification_sms"><?php echo __('Phone number:', MOCEANAPI_ABANDONED_CARTS_TEXT_DOMAIN); ?></label>
 								</th>
 								<td>
-									<input id="moceanapi_abandoned_carts_notification_sms" type="text" name="moceanapi_abandoned_carts_notification_sms" placeholder="<?php echo $phone ?>" value="<?php echo esc_attr( get_option('moceanapi_abandoned_carts_notification_sms') ); ?>" <?php echo $this->disable_field(); ?> />
+									<input id="moceanapi_abandoned_carts_notification_sms" type="text" name="moceanapi_abandoned_carts_notification_sms"  value="<?php echo $default_phone; ?>" <?php echo $this->disable_field(); ?> />
 									<p><small><?php echo sprintf(
 										/* translators: %s - admin phone number */
 										__('By default, notifications will be sent to WordPress admin phone number - %s <br>Please provide country code when enter phonr numbers. E.g. 60123456789', MOCEANAPI_ABANDONED_CARTS_TEXT_DOMAIN), $phone) ?>
@@ -848,8 +854,11 @@ class MoceanAPI_Admin{
 				_n('%5$s <br><br> Great! You have saved %1$d new recoverable abandoned cart using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', '%5$s <br><br> Congratulations, you have saved %1$d new recoverable abandoned carts using %2$s. <br/>View them here: <a href="%3$s">%4$s</a>', $cart_count, MOCEANAPI_ABANDONED_CARTS_TEXT_DOMAIN), esc_html($cart_count), MOCEANAPI_ABANDONED_CARTS_ABREVIATION, esc_html($admin_link), esc_html($admin_link), $template);
 			$headers 	= "$from\n" . "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
 
+			//sanitize admin email
+			$admin_email = sanitize_email($to);
+
 			//Sending out e-mail
-			$email_sent = wp_mail( esc_html($to), esc_html($subject), $message, $headers );
+			$email_sent = wp_mail( esc_html($admin_email), esc_html($subject), $message, $headers );
 			
 			//Update mail_sent status to true with mail_status = 0 and are older than 60 minutes
 			if($email_sent){
@@ -1031,7 +1040,7 @@ class MoceanAPI_Admin{
 		$public = new MoceanAPI_Public(MOCEANAPI_ABANDONED_CARTS_PLUGIN_NAME_SLUG, MOCEANAPI_ABANDONED_CARTS_VERSION_NUMBER);
 
 		if (!empty($_POST['user_id']) && is_numeric($_POST['user_id']) ) { //In case the user's data is updated from WordPress admin dashboard "Edit profile page"
-			$user_id = $_POST['user_id'];
+			$user_id = sanitize_text_field($_POST['user_id']);
 
 		}elseif(!empty($_POST['action'])){ //This check is to prevent profile update to be fired after a new Order is created since no "action" is provided and the user's ID remians 0 and we exit resetting of the abandoned cart
 			$user_id = get_current_user_id();
@@ -1219,6 +1228,7 @@ class MoceanAPI_Admin{
     		}
     		$class = ( $key == esc_html($cart_status) ) ? 'current' : '';
     		$count = $this->get_cart_count($key);
+			$tab = esc_html($tab);
     		if (!($key == 'ghost' && $exclude)){ //If we are not processing Ghost carts and they have not been excluded
 	    		echo "<li><a href='?page=". MOCEANAPI_ABANDONED_CARTS ."&tab=$tab&cart-status=$key' title='$type' class='$class'>$type <span class='count'>($count)</span></a></li>$divider";
 	    	}elseif($key == 'action'){
@@ -1379,7 +1389,7 @@ class MoceanAPI_Admin{
 		if(empty($country)){
 			$country = 'MY';
 		}
-
+		
 		//Retrieve from database rows that have been e-mailed and havent send sms
 		$sms_cart_count = $wpdb->get_var(
 			$wpdb->prepare(
@@ -1397,13 +1407,15 @@ class MoceanAPI_Admin{
 				0			
 			)
 		);
-
 		if($authorize){
 			if($sms_cart_count){ //If we have new rows in the database
-				if(!empty($inputted_phone)){ //If user not input any phone number then use admin number.
+				if(!empty($inputted_phone)){ //If user input any phone number then use inputted as admin number.
 					$sms_to = $inputted_phone;
+				}else{
+					$sms_to = get_user_meta($current_user_id,'billing_phone',true);
 				}
-
+				
+				
 				//Check country code
 				$admin_phone_no = $this->check_and_get_phone_number( $sms_to, $country );
 				if ( $admin_phone_no !== false ) {

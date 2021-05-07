@@ -14,7 +14,7 @@
  * 
  * @package    MoceanAPI Abandoned Carts/Templates
  * @author     Micro Ocean Technologies
- * @version    1.1.1
+ * @version    1.1.2
  */
 
 if (!defined( 'ABSPATH' )){ //Don't allow direct access

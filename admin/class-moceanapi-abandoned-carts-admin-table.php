@@ -112,7 +112,7 @@ class MoceanAPI_Table extends WP_List_Table{
         }
 
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=delete&id=%s&cart-status='. esc_html($cart_status) .'">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'MOCEANAPI_ABANDONED_CARTS_TEXT_DOMAIN')),
+            //'delete' => sprintf('<a href="?page=%s&action=delete&id=%s&cart-status='. esc_html($cart_status) .'">%s</a>', esc_html($_REQUEST['page']), esc_html($item['id']), __('Delete', 'MOCEANAPI_ABANDONED_CARTS_TEXT_DOMAIN')),
         );
 
         $name_array = array();
@@ -355,6 +355,8 @@ class MoceanAPI_Table extends WP_List_Table{
         global $wpdb;
         $cart_table = $wpdb->prefix . MOCEANAPI_ABANDONED_CARTS_TABLE_NAME;
         session_start();
+        $ids = isset($_REQUEST['id']) ? array_map( 'sanitize_text_field', $_REQUEST['id'] ) : array();
+    
         if(!isset($_SESSION["count_sent_sms"]))
         {
             $_SESSION["count_sent_sms"] = 0;
@@ -365,15 +367,11 @@ class MoceanAPI_Table extends WP_List_Table{
         }
 
         if ('delete' === $this->current_action()) {
-
-            $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
-            $selected_id = array_map( 'sanitize_text_field', $ids );
-            
-            if (!empty($selected_id)){
-                if(!is_array($selected_id)){ //Bulk abandoned cart deletion
-                    $selected_id[] = $selected_id;
+            if (!empty($ids)){
+                if(!is_array($ids)){ //Bulk abandoned cart deletion
+                    $ids[] = $ids;
                 }
-                foreach ($selected_id as $key => $id){
+                foreach ($ids as $key => $id){
                     $wpdb->query(
                         $wpdb->prepare(
                             "DELETE FROM $cart_table
@@ -385,14 +383,13 @@ class MoceanAPI_Table extends WP_List_Table{
             }
         }
         elseif('send_sms' === $this->current_action()) {
-            $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
-            $selected_id = array_map( 'sanitize_text_field', $ids );
-            
-            if (!empty($selected_id)){ //If any selection
-                if(!is_array($selected_id)){ //Bulk abandoned cart send sms
-                    $selected_id[] = $selected_id;
+            // $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
+            // $selected_id = array_map( 'sanitize_text_field', $ids );
+            if (!empty($ids)){ //If any selection
+                if(!is_array($ids)){ //Bulk abandoned cart send sms
+                    $ids[] = $ids;
                 }
-                foreach ($selected_id as $key => $id){
+                foreach ($ids as $key => $id){
                     $sent_bulk_sms_successful = $this->send_bulk_sms($id);
                     if($sent_bulk_sms_successful){
                         $_SESSION["count_sent_sms"] = sanitize_text_field($_SESSION["count_sent_sms"]) + 1;
@@ -401,14 +398,13 @@ class MoceanAPI_Table extends WP_List_Table{
             }
         }
         elseif('send_email' === $this->current_action()) {
-            $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
-            $selected_id = array_map( 'sanitize_text_field', $ids );
-
-            if (!empty($selected_id)){ //If any selection
-                if(!is_array($selected_id)){ //Bulk abandoned cart send email
-                    $selected_id[] = $selected_id; 
+            // $ids = isset($_REQUEST['id']) ? $_REQUEST['id'] : array();
+            // $selected_id = array_map( 'sanitize_text_field', $ids );
+            if (!empty($ids)){ //If any selection
+                if(!is_array($ids)){ //Bulk abandoned cart send email
+                    $ids[] = $ids; 
                 }
-                foreach ($selected_id as $key => $id){
+                foreach ($ids as $key => $id){
                     $sent_bulk_email_successfull = $this->send_bulk_email($id);
                     if($sent_bulk_email_successfull){
                         $_SESSION["count_sent_email"] = sanitize_text_field($_SESSION["count_sent_email"]) + 1;
@@ -494,6 +490,7 @@ class MoceanAPI_Table extends WP_List_Table{
                 intval($customer_id)
 			)
         );
+        $customer_email = sanitize_email($customer_email);
 
         if (!empty($customer_email)){ //If we have email in the database
 			

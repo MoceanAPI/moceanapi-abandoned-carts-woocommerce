@@ -4,7 +4,7 @@ Tags: mocean, sms, woocommerce, abandoned carts, abandon carts, cart abandonment
 Requires at least: 4.6
 Tested up to: 5.7.1
 WC tested up to: 5.2.2
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 Requires PHP: 5.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -118,5 +118,5 @@ For example, if admin phone number is at Malaysia, the country code will be +60 
 
 == Changelog ==
 
-= 1.1.1 =
+= 1.1.2 =
 Initial version released

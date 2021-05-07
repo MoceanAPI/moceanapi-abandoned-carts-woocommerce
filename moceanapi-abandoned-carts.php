@@ -3,7 +3,7 @@
 /**
  * Plugin Name: MoceanAPI Abandoned Carts
  * Description: MoceanAPI SMS Notification for WooCommerce Abandoned Carts. 
- * Version: 1.1.1
+ * Version: 1.1.2
  * Text Domain: moceanapi-abandoned-carts-woocommerce
  * Author: Micro Ocean Technologies
  * Author URI: https://moceanapi.com
@@ -33,7 +33,7 @@ if($user_settings_sms_notification_frequency == '' || $user_settings_sms_notific
 }
 
 //Defining constants
-if (!defined('MOCEANAPI_ABANDONED_CARTS_VERSION_NUMBER')) define( 'MOCEANAPI_ABANDONED_CARTS_VERSION_NUMBER', '1.1.1' );
+if (!defined('MOCEANAPI_ABANDONED_CARTS_VERSION_NUMBER')) define( 'MOCEANAPI_ABANDONED_CARTS_VERSION_NUMBER', '1.1.2' );
 if (!defined('MOCEANAPI_ABANDONED_CARTS_PLUGIN_NAME')) define( 'MOCEANAPI_ABANDONED_CARTS_PLUGIN_NAME', 'MoceanAPI Abandoned Carts' );
 if (!defined('MOCEANAPI_ABANDONED_CARTS')) define( 'MOCEANAPI_ABANDONED_CARTS', 'moceanapi_abandoned_carts' );
 if (!defined('MOCEANAPI_ABANDONED_CARTS_PLUGIN_NAME_SLUG')) define( 'MOCEANAPI_ABANDONED_CARTS_PLUGIN_NAME_SLUG', 'moceanapi_abandoned_carts' );

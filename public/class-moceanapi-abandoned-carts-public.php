@@ -390,29 +390,29 @@ class MoceanAPI_Public{
 			);
 
 		}else{ //Checking if we have values coming from the input fields
-			(isset($_POST['moceanapi_abandoned_carts_name'])) ? $name = $_POST['moceanapi_abandoned_carts_name'] : $name = ''; //If/Else shorthand (condition) ? True : False
-			(isset($_POST['moceanapi_abandoned_carts_surname'])) ? $surname = $_POST['moceanapi_abandoned_carts_surname'] : $surname = '';
-			(isset($_POST['moceanapi_abandoned_carts_email'])) ? $email = $_POST['moceanapi_abandoned_carts_email'] : $email = '';
-			(isset($_POST['moceanapi_abandoned_carts_phone'])) ? $phone = $_POST['moceanapi_abandoned_carts_phone'] : $phone = '';
-			(isset($_POST['moceanapi_abandoned_carts_country'])) ? $country = $_POST['moceanapi_abandoned_carts_country'] : $country = '';
-			(isset($_POST['moceanapi_abandoned_carts_city']) && $_POST['moceanapi_abandoned_carts_city'] != '') ? $city = $_POST['moceanapi_abandoned_carts_city'] : $city = '';
-			(isset($_POST['moceanapi_abandoned_carts_billing_company'])) ? $company = $_POST['moceanapi_abandoned_carts_billing_company'] : $company = '';
-			(isset($_POST['moceanapi_abandoned_carts_billing_address_1'])) ? $address_1 = $_POST['moceanapi_abandoned_carts_billing_address_1'] : $address_1 = '';
-			(isset($_POST['moceanapi_abandoned_carts_billing_address_2'])) ? $address_2 = $_POST['moceanapi_abandoned_carts_billing_address_2'] : $address_2 = '';
-			(isset($_POST['moceanapi_abandoned_carts_billing_state'])) ? $state = $_POST['moceanapi_abandoned_carts_billing_state'] : $state = '';
-			(isset($_POST['moceanapi_abandoned_carts_billing_postcode'])) ? $postcode = $_POST['moceanapi_abandoned_carts_billing_postcode'] : $postcode = '';
-			(isset($_POST['moceanapi_abandoned_carts_shipping_first_name'])) ? $shipping_name = $_POST['moceanapi_abandoned_carts_shipping_first_name'] : $shipping_name = '';
-			(isset($_POST['moceanapi_abandoned_carts_shipping_last_name'])) ? $shipping_surname = $_POST['moceanapi_abandoned_carts_shipping_last_name'] : $shipping_surname = '';
-			(isset($_POST['moceanapi_abandoned_carts_shipping_company'])) ? $shipping_company = $_POST['moceanapi_abandoned_carts_shipping_company'] : $shipping_company = '';
-			(isset($_POST['moceanapi_abandoned_carts_shipping_country'])) ? $shipping_country = $_POST['moceanapi_abandoned_carts_shipping_country'] : $shipping_country = '';
-			(isset($_POST['moceanapi_abandoned_carts_shipping_address_1'])) ? $shipping_address_1 = $_POST['moceanapi_abandoned_carts_shipping_address_1'] : $shipping_address_1 = '';
-			(isset($_POST['moceanapi_abandoned_carts_shipping_address_2'])) ? $shipping_address_2 = $_POST['moceanapi_abandoned_carts_shipping_address_2'] : $shipping_address_2 = '';
-			(isset($_POST['moceanapi_abandoned_carts_shipping_city'])) ? $shipping_city = $_POST['moceanapi_abandoned_carts_shipping_city'] : $shipping_city = '';
-			(isset($_POST['moceanapi_abandoned_carts_shipping_state'])) ? $shipping_state = $_POST['moceanapi_abandoned_carts_shipping_state'] : $shipping_state = '';
-			(isset($_POST['moceanapi_abandoned_carts_shipping_postcode'])) ? $shipping_postcode = $_POST['moceanapi_abandoned_carts_shipping_postcode'] : $shipping_postcode = '';
-			(isset($_POST['moceanapi_abandoned_carts_order_comments'])) ? $comments = $_POST['moceanapi_abandoned_carts_order_comments'] : $comments = '';
-			(isset($_POST['moceanapi_abandoned_carts_create_account'])) ? $create_account = $_POST['moceanapi_abandoned_carts_create_account'] : $create_account = '';
-			(isset($_POST['moceanapi_abandoned_carts_ship_elsewhere'])) ? $ship_elsewhere = $_POST['moceanapi_abandoned_carts_ship_elsewhere'] : $ship_elsewhere = '';
+			(isset($_POST['moceanapi_abandoned_carts_name'])) ? $name = sanitize_text_field($_POST['moceanapi_abandoned_carts_name']) : $name = ''; //If/Else shorthand (condition) ? True : False
+			(isset($_POST['moceanapi_abandoned_carts_surname'])) ? $surname = sanitize_text_field($_POST['moceanapi_abandoned_carts_surname']) : $surname = '';
+			(isset($_POST['moceanapi_abandoned_carts_email'])) ? $email = sanitize_email($_POST['moceanapi_abandoned_carts_email']) : $email = '';
+			(isset($_POST['moceanapi_abandoned_carts_phone'])) ? $phone = sanitize_text_field($_POST['moceanapi_abandoned_carts_phone']) : $phone = '';
+			(isset($_POST['moceanapi_abandoned_carts_country'])) ? $country = sanitize_text_field($_POST['moceanapi_abandoned_carts_country']) : $country = '';
+			(isset($_POST['moceanapi_abandoned_carts_city']) && $_POST['moceanapi_abandoned_carts_city'] != '') ? $city = sanitize_text_field($_POST['moceanapi_abandoned_carts_city']) : $city = '';
+			(isset($_POST['moceanapi_abandoned_carts_billing_company'])) ? $company = sanitize_text_field($_POST['moceanapi_abandoned_carts_billing_company']) : $company = '';
+			(isset($_POST['moceanapi_abandoned_carts_billing_address_1'])) ? $address_1 = sanitize_text_field($_POST['moceanapi_abandoned_carts_billing_address_1']) : $address_1 = '';
+			(isset($_POST['moceanapi_abandoned_carts_billing_address_2'])) ? $address_2 = sanitize_text_field($_POST['moceanapi_abandoned_carts_billing_address_2']) : $address_2 = '';
+			(isset($_POST['moceanapi_abandoned_carts_billing_state'])) ? $state = sanitize_text_field($_POST['moceanapi_abandoned_carts_billing_state']) : $state = '';
+			(isset($_POST['moceanapi_abandoned_carts_billing_postcode'])) ? $postcode = sanitize_text_field($_POST['moceanapi_abandoned_carts_billing_postcode']) : $postcode = '';
+			(isset($_POST['moceanapi_abandoned_carts_shipping_first_name'])) ? $shipping_name = sanitize_text_field($_POST['moceanapi_abandoned_carts_shipping_first_name']) : $shipping_name = '';
+			(isset($_POST['moceanapi_abandoned_carts_shipping_last_name'])) ? $shipping_surname = sanitize_text_field($_POST['moceanapi_abandoned_carts_shipping_last_name']) : $shipping_surname = '';
+			(isset($_POST['moceanapi_abandoned_carts_shipping_company'])) ? $shipping_company = sanitize_text_field($_POST['moceanapi_abandoned_carts_shipping_company']) : $shipping_company = '';
+			(isset($_POST['moceanapi_abandoned_carts_shipping_country'])) ? $shipping_country = sanitize_text_field($_POST['moceanapi_abandoned_carts_shipping_country']) : $shipping_country = '';
+			(isset($_POST['moceanapi_abandoned_carts_shipping_address_1'])) ? $shipping_address_1 = sanitize_text_field($_POST['moceanapi_abandoned_carts_shipping_address_1']) : $shipping_address_1 = '';
+			(isset($_POST['moceanapi_abandoned_carts_shipping_address_2'])) ? $shipping_address_2 = sanitize_text_field($_POST['moceanapi_abandoned_carts_shipping_address_2']) : $shipping_address_2 = '';
+			(isset($_POST['moceanapi_abandoned_carts_shipping_city'])) ? $shipping_city = sanitize_text_field($_POST['moceanapi_abandoned_carts_shipping_city']) : $shipping_city = '';
+			(isset($_POST['moceanapi_abandoned_carts_shipping_state'])) ? $shipping_state = sanitize_text_field($_POST['moceanapi_abandoned_carts_shipping_state']) : $shipping_state = '';
+			(isset($_POST['moceanapi_abandoned_carts_shipping_postcode'])) ? $shipping_postcode = sanitize_text_field($_POST['moceanapi_abandoned_carts_shipping_postcode']) : $shipping_postcode = '';
+			(isset($_POST['moceanapi_abandoned_carts_order_comments'])) ? $comments = sanitize_text_field($_POST['moceanapi_abandoned_carts_order_comments']) : $comments = '';
+			(isset($_POST['moceanapi_abandoned_carts_create_account'])) ? $create_account = sanitize_text_field($_POST['moceanapi_abandoned_carts_create_account']) : $create_account = '';
+			(isset($_POST['moceanapi_abandoned_carts_ship_elsewhere'])) ? $ship_elsewhere = sanitize_text_field($_POST['moceanapi_abandoned_carts_ship_elsewhere']) : $ship_elsewhere = '';
 			
 			$other_fields = array(
 				'moceanapi_abandoned_carts_billing_company' 		=> sanitize_text_field($company),
